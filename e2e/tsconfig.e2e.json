@@ -10,5 +10,8 @@
       "jasminewd2",
       "node"
     ]
-  }
+  },
+  "exclude": [
+    "../api/node_modules"
+  ]
 }
