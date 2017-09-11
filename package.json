@@ -66,6 +66,7 @@
     "source-map-loader": "^0.2.0",
     "style-loader": "^0.13.1",
     "stylus-loader": "^3.0.1",
+    "tmp": "0.0.33",
     "ts-node": "~3.2.0",
     "tslint": "~5.7.0",
     "typescript": "~2.4.2",
