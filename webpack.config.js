@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const webpack = require('webpack');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const ProgressPlugin = require('webpack/lib/ProgressPlugin');
 const CircularDependencyPlugin = require('circular-dependency-plugin');
@@ -91,6 +92,9 @@ module.exports = {
       "main"
     ]
   },
+  "externals": [
+    resolveExternals
+  ],
   "resolveLoader": {
     "modules": [
       "./node_modules",
@@ -554,6 +558,9 @@ module.exports = {
       "sourceMap": false,
       "tsConfigPath": "src/tsconfig.app.json",
       "compilerOptions": {}
+    }),
+    new webpack.ProvidePlugin({
+      __extends: 'typescript-extends'
     })
   ],
   "node": {
@@ -565,9 +572,25 @@ module.exports = {
     "process": true,
     "module": false,
     "clearImmediate": false,
-    "setImmediate": false
+    "setImmediate": false,
+    "__dirname": true
   },
   "devServer": {
     "historyApiFallback": true
   }
 };
+
+function resolveExternals(context, request, callback) {
+  return resolveMeteor(request, callback) ||
+    callback();
+}
+
+function resolveMeteor(request, callback) {
+  var match = request.match(/^meteor\/(.+)$/);
+  var pack = match && match[1];
+
+  if (pack) {
+    callback(null, 'Package["' + pack + '"]');
+    return true;
+  }
+}
