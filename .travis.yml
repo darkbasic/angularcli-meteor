@@ -1,0 +1,31 @@
+dist: trusty
+sudo: required
+
+language: node_js
+node_js:
+  - "6"
+
+services:
+  - mongodb
+
+before_install:
+  - curl https://install.meteor.com | /bin/sh
+  - rm -rf node_modules
+
+cache:
+  directories:
+     - ./node_modules
+
+install:
+  - git clean -fXd
+  - npm install -g concurrently
+  - npm install
+  - meteor npm rebuild
+  - npm run meteor-client:bundle
+  - npm run api:reset
+
+script:
+  # Use Chromium instead of Chrome.
+  - export CHROME_BIN=chromium-browser
+  - npm run test
+  - concurrently "npm run start" "npm run api" "sleep 120; npm run e2e" --kill-others --success first
